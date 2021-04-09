@@ -33,9 +33,9 @@ def predict():
 
     res = r[0]
 
-    res={"test":"aaa","argmax":res.argmax()}
+    res={"test":"aaa","argmax":res.argmax().item()}
     #res["test"]="aaa"
-    #res["argmax"]=res.argmax()
+    #res["argmax"]=res.argmax().item()
 
     return jsonify(res)
 
