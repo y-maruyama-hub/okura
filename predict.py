@@ -1,9 +1,10 @@
+import argparse
 import cv2
 import numpy as np
 from flask import Flask,Response,request,jsonify
 from keras.models import load_model
 
-image_size = (40,30)
+#image_size = (40,30)
 modelpath="model"
 model_name="cat_model.h5"
 weights_name="cat_weightsV2.h5"
@@ -41,4 +42,12 @@ def predict():
 
 if __name__ == '__main__':
 
-    app.run(host='0.0.0.0', debug=False,threaded=True)
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("-p","--port",type=int,default=5000)
+
+    args = parser.parse_args()
+
+    myport=int(args.port)
+
+    app.run(host='0.0.0.0', debug=False,threaded=True,port=myport)
