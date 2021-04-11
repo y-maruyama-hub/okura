@@ -1,8 +1,10 @@
+import os
 import argparse
 import cv2
 import numpy as np
 from flask import Flask,Response,request,jsonify
 from keras.models import load_model
+from dotenv import load_dotenv
 
 #image_size = (40,30)
 modelpath="model"
@@ -12,8 +14,8 @@ weights_name="cat_weightsV2.h5"
 ##https://dev.to/yurfuwa/flask--tensorflow--keras--predict-bnk
 ##https://github.com/keras-team/keras/issues/2397#issuecomment-254919212
 
-gmodel=load_model(modelpath+"/"+model_name)
-gmodel.load_weights(modelpath+"/"+weights_name)
+#gmodel=load_model(modelpath+"/"+model_name)
+#gmodel.load_weights(modelpath+"/"+weights_name)
 
 
 
@@ -49,5 +51,11 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     myport=int(args.port)
+
+    load_dotenv()
+
+    gmodel=load_model(os.getenv("MODEL_PATH"))
+    gmodel.load_weights(os.getenv("WEIGHT_PATH"))
+
 
     app.run(host='0.0.0.0', debug=False,threaded=True,port=myport)
