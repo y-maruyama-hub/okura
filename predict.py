@@ -36,7 +36,7 @@ def predict():
 
     res = r[0]
 
-    res={"test":"aaa","argmax":res.argmax().item()}
+    res={"argmax":res.argmax().item(),"prob":float(res[1])}
     #res["test"]="aaa"
     #res["argmax"]=res.argmax().item()
 
