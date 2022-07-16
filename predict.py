@@ -5,6 +5,8 @@ import numpy as np
 from flask import Flask,Response,request,jsonify
 from keras.models import load_model
 from dotenv import load_dotenv
+import random
+import datetime
 
 #image_size = (40,30)
 modelpath="model"
@@ -29,16 +31,29 @@ def predict():
 
     img = cv2.imdecode(_bytes, flags=cv2.IMREAD_COLOR)
 
-    img = cv2.resize(img,(64,48))
-    img = img.astype("float")/255
+    imgf = cv2.resize(img,(64,48))
+    img = imgf.astype("float")/255
 
     r=gmodel.predict(np.array([img]),batch_size=32,verbose=0)
 
     res = r[0]
 
+    mx=res.argmax()
     res={"argmax":res.argmax().item(),"prob":float(res[1])}
     #res["test"]="aaa"
     #res["argmax"]=res.argmax().item()
+
+    try:
+        tm = datetime.datetime.now()
+        rdm=random.randint(0,9)
+        _,jpeg= cv2.imencode(".jpg", imgf)
+        f = open("{0}/{1}/{2}_{3}.jpg".format(savepath,mx,tm.strftime("%Y%m%d%H%M%S_%f"),rdm), "wb")
+        f.write(jpeg)
+
+    except :
+        traceback.print_exc()
+    finally :
+        f.close()
 
     return jsonify(res)
 
@@ -57,5 +72,6 @@ if __name__ == '__main__':
     gmodel=load_model(os.getenv("MODEL_PATH"))
     gmodel.load_weights(os.getenv("WEIGHT_PATH"))
 
+    savepath=os.getenv("SAVEPATH")
 
     app.run(host='0.0.0.0', debug=False,threaded=True,port=myport)
