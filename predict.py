@@ -9,9 +9,9 @@ import random
 import datetime
 
 #image_size = (40,30)
-modelpath="model"
-model_name="cat_model.h5"
-weights_name="cat_weightsV2.h5"
+# modelpath="model"
+# model_name="cat_model.h5"
+# weights_name="cat_weightsV2.h5"
 
 ##https://dev.to/yurfuwa/flask--tensorflow--keras--predict-bnk
 ##https://github.com/keras-team/keras/issues/2397#issuecomment-254919212
@@ -20,11 +20,13 @@ weights_name="cat_weightsV2.h5"
 #gmodel.load_weights(modelpath+"/"+weights_name)
 
 
+load_dotenv()
+url_base_path = os.getenv("URL_BASE_PATH")
 
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
 
-@app.route("/predict",methods=["POST"])
+@app.route("{0}/predict".format(url_base_path),methods=["POST"])
 def predict():
 
     _bytes = np.frombuffer(request.data, np.uint8)
@@ -66,8 +68,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     myport=int(args.port)
-
-    load_dotenv()
 
     gmodel=load_model(os.getenv("MODEL_PATH"))
     gmodel.load_weights(os.getenv("WEIGHT_PATH"))
